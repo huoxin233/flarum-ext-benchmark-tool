@@ -39,7 +39,7 @@
                 "jsCommon": false,
                 "css": false,
                 "locale": false,
-                "gitConf": false,
+                "gitConf": true,
                 "githubActions": true,
                 "prettier": false,
                 "typescript": false,
