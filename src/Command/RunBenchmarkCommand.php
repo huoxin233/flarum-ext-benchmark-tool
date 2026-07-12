@@ -133,7 +133,6 @@ class RunBenchmarkCommand extends Command
             $benchmarkPhp = (string) $this->option('benchmark-php');
             
             // 🔥 START TIMER: Only measure internal execution stack
-            $startMemory = memory_get_usage();
             $startTime = microtime(true);
 
             $status = 200;
