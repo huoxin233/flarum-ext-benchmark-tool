@@ -31,7 +31,7 @@ class RunBenchmarkCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'benchmark:run {--endpoint=/api/discussions : API Endpoint to test} {--method=GET : HTTP Method} {--body= : JSON Body for POST/PATCH} {--actor=1 : User ID to test as} {--seed-users=50 : Users to seed} {--seed-discussions=50 : Discussions to seed} {--seed-posts=10000 : Posts to seed} {--iterations=5 : Number of times to run the request} {--show-response : Output the raw API response for debugging} {--json-out= : Output results in JSON format to the specified file} {--clear-cache : Clear the application cache before each iteration} {--warmup : Run an initial iteration to warm up cache} {--setup-sql= : Raw SQL to run before benchmark} {--setup-php= : Raw PHP to run before benchmark} {--benchmark-sql= : Raw SQL to benchmark instead of API} {--benchmark-php= : Raw PHP to benchmark instead of API}';
+    protected $signature = 'benchmark:run {--endpoint=/api/discussions : API Endpoint to test} {--method=GET : HTTP Method} {--body= : JSON Body for POST/PATCH} {--actor=1 : User ID to test as} {--seed-users=50 : Users to seed} {--seed-discussions=50 : Discussions to seed} {--seed-posts=10000 : Posts to seed} {--iterations=5 : Number of times to run the request} {--show-response : Output the raw API response for debugging} {--json-out= : Output results in JSON format to the specified file} {--clear-cache : Clear the application cache before each iteration} {--warmup : Run an initial iteration to warm up cache} {--setup-sql= : Raw SQL to run before benchmark} {--setup-php= : Raw PHP to run before benchmark} {--benchmark-sql= : Raw SQL to benchmark instead of API} {--benchmark-php= : Raw PHP to benchmark instead of API} {--seed-only : Seed the database and exit without benchmarking}';
 
     /**
      * The console command description.
@@ -78,6 +78,14 @@ class RunBenchmarkCommand extends Command
         if ($setupPhp !== '') {
             eval($setupPhp);
         }
+        
+        if ($this->option('seed-only')) {
+            if ($jsonOut === '') {
+                $this->info("Seed-only mode active. Database seeded successfully. Exiting.");
+            }
+            return 0;
+        }
+        
         /** @var array<int, array{sql: string, time: float}> $currentQueries */
         $currentQueries = [];
         $events->listen(QueryExecuted::class, function (QueryExecuted $query) use (&$currentQueries) {
